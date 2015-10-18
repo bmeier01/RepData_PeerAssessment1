@@ -148,10 +148,66 @@ mean_per_day <- RR_week2 %>%
 
 # replace NaN's (or na) with 0's in dataframe, both mean and median will be 0 for these days...
 mean_per_day[is.na(mean_per_day)] <- 0
+
+# repeat mean as many times as datapoints for each day, which is 288
+daily_mean <- rep(mean_per_day$steps_per_day,each=288)
 ```
 
 ### Create a new dataset with the missing data filled in
 
+```r
+# rename data frame
+RR_week_daily_mean_repl_NA <- RR_week2
+# add column daily mean to dataframe
+RR_week_daily_mean_repl_NA$mean_of_the_day <- daily_mean
+# extract info about the steps that are NA
+stepsNA <- is.na(RR_week_daily_mean_repl_NA$steps)
+# replace steps that are NA by daily mean
+RR_week_daily_mean_repl_NA$steps[stepsNA] <- RR_week_daily_mean_repl_NA$mean_of_the_day[stepsNA]
+
+# check that all na's are replaced in the new document
+sum(is.na(RR_week_daily_mean_repl_NA))
+```
+
+```
+## [1] 0
+```
+
+### Make a histogram of the total number of steps taken each day. Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+
+```r
+# calculate the total number of steps per day
+total_per_day_NA_to_dmean <- RR_week_daily_mean_repl_NA %>%
+  group_by(date) %>%
+  summarise(steps_per_day = sum(steps))
+
+# plot a histogram with the total number of steps per day
+library("ggplot2")
+ggplot(total_per_day_NA_to_dmean, aes(x=date, y=steps_per_day)) + geom_histogram(stat="identity") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
+
+```r
+# calculate the mean and median number of total steps per day
+mean_total_steps_across_all_days_2 <- mean(total_per_day_NA_to_dmean$steps)
+mean_total_steps_across_all_days_2
+```
+
+```
+## [1] 9354.23
+```
+
+```r
+median_total_steps_across_all_days_2 <- median(total_per_day_NA_to_dmean$steps)
+median_total_steps_across_all_days_2
+```
+
+```
+## [1] 10395
+```
+###### The mean and the median are somewhat reduced, with the mean showing a stronger change (as there are more datapoints? less impact of outliers?)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
