@@ -7,12 +7,61 @@ output:
 
 
 ## Loading and preprocessing the data
+### Loading the data file
+```{r, echo = TRUE}
+RR_week2 <- read.csv("activity.csv", na.strings=c("NA"))
+```
 
+### Preprocessing the data file
+```{r, echo = TRUE}
+# check if variables are in correct format
+str(RR_week2)
 
+# make steps numeric
+steps <- as.numeric(RR_week2$steps, na.rm = TRUE)
+RR_week2$steps <- steps 
+```
 
 ## What is mean total number of steps taken per day?
 
+### Calculate the total number of steps taken per day
+```{r, echo = TRUE}
+# load dplyr
+library(dplyr)
 
+# calculate the total number of steps per day
+total_per_day <- RR_week2 %>%
+  group_by(date) %>%
+  summarise(steps_per_day = sum(steps))
+```
+
+### Create a histogramm of the total number of steps taken per day
+
+```{r, echo=TRUE}
+# plot a histogram with the total number of steps per day
+ggplot(total_per_day, aes(x=date, y=steps_per_day)) + geom_histogram(stat="identity") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+### Calculate and report the mean and median of the total number of steps taken per day 
+
+```{r, echo=TRUE}
+# calculate the mean number of total steps per day
+#mean_per_day <- RR_week2 %>%
+#  group_by(date) %>%
+#  summarise(steps_per_day = mean(steps))
+#mean_per_day
+
+#median_per_day <- RR_week2 %>%
+#  group_by(date) %>%
+#  summarise(steps_per_day = median(steps))
+#median_per_day
+
+mean_total_steps_across_all_days <- mean(total_per_day$steps, na.rm=TRUE)
+mean_total_steps_across_all_days
+
+median_total_steps_across_all_days <- median(total_per_day$steps, na.rm=TRUE)
+median_total_steps_across_all_days
+```
 
 ## What is the average daily activity pattern?
 
