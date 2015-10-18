@@ -213,3 +213,6 @@ median_total_steps_across_all_days_2
 ## Are there differences in activity patterns between weekdays and weekends?
 
 
+```r
+# not completed
+```
